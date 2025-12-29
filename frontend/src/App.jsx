@@ -18,7 +18,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = window.location.origin;
 const REFRESH_INTERVAL = 60000; // 60 秒
 
 function App() {
@@ -39,13 +39,13 @@ function App() {
       setError(null);
 
       const response = await fetch(`${API_BASE_URL}/api/all?period=${period}`);
-      
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
       }
 
       const result = await response.json();
-      
+
       if (result.success) {
         setData(result.data);
         setLastUpdate(new Date());
@@ -142,7 +142,7 @@ function App() {
                 金融市場監控儀表板
               </h1>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               {/* 週期選擇器 */}
               <select
@@ -164,14 +164,22 @@ function App() {
                 className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
               >
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                <span>{loading ? '加載中...' : '刷新'}</span>
+                <span>{loading ? '載入中...' : '刷新'}</span>
               </button>
             </div>
           </div>
 
           {lastUpdate && (
             <p className="text-sm text-gray-500 mt-2">
-              最後更新: {lastUpdate.toLocaleString('zh-TW')}
+              最後更新: {lastUpdate.toLocaleString('zh-TW', { 
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+              })}
             </p>
           )}
         </div>
@@ -196,21 +204,21 @@ function App() {
             color="text-blue-600"
           />
           <StatCard
-            title="USD/JPY"
+            title="美元/日圓"
             value={latestFx ? latestFx.rate.toFixed(2) : '--'}
             change={latestFx?.rate - (data.fx[0]?.rate || 0)}
             icon={DollarSign}
             color="text-green-600"
           />
           <StatCard
-            title="黃金 (USD/oz)"
+            title="黃金 (美元/盎司)"
             value={latestGold ? `$${latestGold.price.toFixed(2)}` : '--'}
             change={latestGold?.change}
             icon={Activity}
             color="text-yellow-600"
           />
           <StatCard
-            title="原油 (USD/barrel)"
+            title="原油 (美元/桶)"
             value={latestOil ? `$${latestOil.price.toFixed(2)}` : '--'}
             change={latestOil?.change}
             icon={Activity}
@@ -223,7 +231,7 @@ function App() {
           {/* 雙 Y 軸圖表：美日利差 vs USD/JPY */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-bold text-gray-800 mb-4">
-              美日利差 vs USD/JPY 匯率
+              美日利差 vs 美元/日圓匯率
             </h2>
             <ResponsiveContainer width="100%" height={400}>
               <ComposedChart data={combinedData}>
@@ -243,7 +251,7 @@ function App() {
                 <YAxis
                   yAxisId="right"
                   orientation="right"
-                  label={{ value: 'USD/JPY', angle: 90, position: 'insideRight' }}
+                  label={{ value: '美元/日圓', angle: 90, position: 'insideRight' }}
                   domain={['auto', 'auto']}
                 />
                 <Tooltip content={<CustomTooltip />} />
@@ -263,7 +271,7 @@ function App() {
                   dataKey="rate"
                   stroke="#10b981"
                   strokeWidth={2}
-                  name="USD/JPY"
+                  name="美元/日圓"
                   dot={{ r: 3 }}
                 />
               </ComposedChart>
@@ -339,7 +347,7 @@ function App() {
       <footer className="bg-white mt-12 py-6 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
           <p>© 2024 金融市場監控系統 | 數據每 60 秒自動刷新</p>
-          <p className="mt-1">Data source: Yahoo Finance API</p>
+          <p className="mt-1">資料來源: Yahoo Finance API</p>
         </div>
       </footer>
     </div>
