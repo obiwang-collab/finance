@@ -1,0 +1,27 @@
+# 後端環境變數配置範例
+# 複製此文件為 .env 並根據需要修改
+
+# 伺服器配置
+PORT=8000
+HOST=0.0.0.0
+
+# CORS 設定（生產環境請修改為實際域名）
+CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+
+# API 配置
+API_TITLE=FinTech Monitor API
+API_VERSION=1.0.0
+API_DESCRIPTION=Real-time financial market monitoring API
+
+# 日誌級別
+LOG_LEVEL=INFO
+
+# 數據刷新設定（秒）
+DATA_REFRESH_INTERVAL=60
+
+# yfinance 配置
+YFINANCE_TIMEOUT=10
+
+# 可選：如果未來需要 API 密鑰
+# ALPHA_VANTAGE_API_KEY=your_api_key_here
+# TWELVE_DATA_API_KEY=your_api_key_here
